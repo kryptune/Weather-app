@@ -37,7 +37,7 @@ export default function ForecastPanel ({forecastData, data, capitalize}) {
           </p>
           <img src={weatherIcon} className="w-20 h-20"/>
           <div className="text-3xl text-[#ffffff] font-bold mb-2">{Math.round(forecast.main.temp)}°C </div>
-          <div className="text-base text-[#ffffff] whitespace-nowrap">{capitalize(forecast.weather[0].description)} ({forecast.pop * 100}%)</div>
+          <div className="text-base text-[#ffffff] whitespace-nowrap">{capitalize(forecast.weather[0].description)} ({Math.round(forecast.pop * 100)}%)</div>
       </div>
     )
   })
