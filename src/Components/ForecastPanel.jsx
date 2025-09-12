@@ -26,8 +26,8 @@ export default function ForecastPanel ({forecastData, data, capitalize}) {
   const forecastDataArray = updatedData.map((forecast,i) => {
     let weatherIcon = `https://openweathermap.org/img/wn/${forecast.weather[0].icon}@2x.png`
     return (
-      <div key={i} className="flex flex-col px-3 py-4 items-center justify-center bg-[#242424] w-[142px] rounded-lg"> 
-          <p className="font-semibold text-sm text-[#ffffff]">
+      <div key={i} className="flex flex-col px-3 py-4 items-center justify-center bg-[#242424] w-[175px] rounded-lg"> 
+          <p className="font-semibold text-base text-[#ffffff]">
               {new Date(forecast.dt).toLocaleString('en-US', {
                 weekday: 'short',
                 hour: 'numeric',
@@ -37,7 +37,7 @@ export default function ForecastPanel ({forecastData, data, capitalize}) {
           </p>
           <img src={weatherIcon} className="w-20 h-20"/>
           <div className="text-3xl text-[#ffffff] font-bold mb-2">{Math.round(forecast.main.temp)}°C </div>
-          <div className="text-base text-[#ffffff] whitespace-nowrap">{capitalize(forecast.weather[0].description)}</div>
+          <div className="text-base text-[#ffffff] whitespace-nowrap">{capitalize(forecast.weather[0].description)} ({forecast.pop * 100}%)</div>
       </div>
     )
   })
