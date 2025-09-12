@@ -62,7 +62,7 @@ function App() {
     useEffect(() => { fetchWeatherData() }, []);
 
     return (
-      <div className='bg-[#121212] p-6 min-h-screen md:p-12'>
+      <div className='bg-[#121212] p-4 min-h-screen md:p-12'>
         <Header name={name} setShowChangeCity={setShowChangeCity} />
         {showChangeCity && <motion.div
                         initial={{ x: '100%' }} // Start off-screen to the right
