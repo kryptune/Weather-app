@@ -8,11 +8,11 @@ export default function ForecastPanel ({forecastData, data, capitalize}) {
   const adjustedThreeDaysForecast = threeDaysForecast?.map(item => {
       return {...item, dt: (item.dt + data?.timezone) * 1000}
   })
-  const dateToday = new Date(adjustedThreeDaysForecast[0]?.dt);
-  const tomorrow = new Date(dateToday);
-  tomorrow.setUTCDate(dateToday.getUTCDate() + 1);
-  const todayNumber = dateToday.getUTCDate();
-  const tomorrowNumber = tomorrow.getUTCDate();
+  const nowUTC = new Date();
+  const timezoneOffset = data?.timezone;
+  const localTime = new Date(nowUTC.getTime() + timezoneOffset * 1000);
+  const todayNumber = localTime.getUTCDate();
+  const tomorrowNumber = todayNumber + 1;
   const [updatedData, setUpdatedData] = useState([])
   const [activeTab, setActiveTab] = useState("today")
   const dataToday = adjustedThreeDaysForecast.filter(hourlyData => new Date(hourlyData.dt).getUTCDate() === todayNumber)

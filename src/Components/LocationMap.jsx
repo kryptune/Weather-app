@@ -3,7 +3,9 @@ import { useEffect, useRef, useState } from "react";
 
 export default function LocationMap({ city, latitude, longitude, setShowChangeCity, setCity, fetchWeatherData, setLatitude, setLongitude }) {
     const defaultLocation = [latitude, longitude];
-    const [tempCity, setTempCity] = useState(city)  
+    const [tempCity, setTempCity] = useState(city)
+    const [tempLat, setTempLat] = useState(latitude)
+    const [tempLong, setTempLong] = useState(longitude)  
     const mapRef = useRef(null);
     const markerRef = useRef(null);
 
@@ -52,8 +54,11 @@ export default function LocationMap({ city, latitude, longitude, setShowChangeCi
             if (data && data.length > 0) {
                 const lat = parseFloat(data[0].lat);
                 const lon = parseFloat(data[0].lon);
+                fetchWeatherData(lat,lon);
                 setLatitude(lat)
                 setLongitude(lon)
+                setCity(tempCity)
+                console.log(tempLat,tempLong)
                 const newLocation = [lat, lon];
                 mapRef.current.setView(newLocation, 12);
                 markerRef.current.setLatLng(newLocation);
@@ -71,8 +76,8 @@ export default function LocationMap({ city, latitude, longitude, setShowChangeCi
         const coords = markerRef.current.getLatLng();
         const lat = coords.lat.toFixed(4);
         const lng = coords.lng.toFixed(4);
-        setLatitude(lat)
-        setLongitude(lng)
+        setTempLat(lat)
+        setTempLong(lng)
         // Use the Nominatim reverse geocoding service to get the city name
         const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`;
         try {
@@ -94,7 +99,13 @@ export default function LocationMap({ city, latitude, longitude, setShowChangeCi
         e.preventDefault();
         searchCity(tempCity)
     };
-
+    
+    useEffect(() => {
+      if (tempLat && tempLong) {
+        console.log("Updated:", tempLat, tempLong);
+        // you can trigger fetchWeatherData here if needed
+      }
+    }, [tempLat, tempLong]);
 
   return (
     <div>
@@ -124,9 +135,11 @@ export default function LocationMap({ city, latitude, longitude, setShowChangeCi
           Search City
         </button>
         <button className="text-xs md:text-base text-black bg-[#ADD8E6] rounded-xl h-10  w-22 p-2 mr-auto" onClick={()=>
-            {
-                fetchWeatherData()
+            {   
+                searchCity(tempCity)
                 setCity(tempCity)
+                setLatitude(tempLat)
+                setLongitude(tempLong)
             }}>
           Get Weather
         </button>

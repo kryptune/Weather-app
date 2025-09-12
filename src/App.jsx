@@ -8,25 +8,24 @@ import { motion } from 'framer-motion';
 
 
 function App() {
-    const [city, setCity] = useState("Manila")
-    const [latitude, setLatitude] = useState(14.59)
-    const [longitude, setLongitude] = useState(120.98)
+    const [city, setCity] = useState(localStorage.getItem("city") || "Manila")
+    const [latitude, setLatitude] = useState(localStorage.getItem("lat") || 14.59)
+    const [longitude, setLongitude] = useState(localStorage.getItem("long") || 120.98)
     const [name, setName] = useState("Guest")
     const [currentData, setCurrentData] = useState(null)
     const [forecastData, setForecastData] = useState([])
     const [error, setError] = useState("")
     const [showChangeCity, setShowChangeCity] = useState(false)
     const API_KEY = "5a08e2e34a40d8046fa491ad838ae95e"
-    // The API URL for the 5-day / 3-hour forecast
-    const FORECAST_URL = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`;
-    // The API URL for the current weather
-    const CURRENT_WEATHER_URL = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`;
-
-    const fetchWeatherData = async () => {
+    
+    const fetchWeatherData = async (latArg, lonArg) => {
+        // The API URL for the 5-day / 3-hour forecast
+        const FORECAST_URL = `https://api.openweathermap.org/data/2.5/forecast?lat=${latArg}&lon=${lonArg}&appid=${API_KEY}&units=metric`;
+        // The API URL for the current weather
+        const CURRENT_WEATHER_URL = `https://api.openweathermap.org/data/2.5/weather?lat=${latArg}&lon=${lonArg}&appid=${API_KEY}&units=metric`;
         setError(null);
         setCurrentData(null);
         setForecastData([]);
-        console.log(currentData)
         if(!city.trim()){
             alert("Please enter a city")
         }
@@ -41,6 +40,7 @@ function App() {
               const foreCastJSON = await forecastResponse.json()
               if(forecastResponse.ok){
                   setForecastData(foreCastJSON.list)
+                  console.log("Fecthed data")
               }else {
                   setError(foreCastJSON.message || "Failed to fetch 5-day forecast data")
               }
@@ -50,8 +50,7 @@ function App() {
         } catch (err) {
             setError('Failed to fetch data. Please check your network connection.');
             console.error(err);
-        }
-        console.log(forecastData)     
+        }    
     }
 
     const capitalize = (str) => {
@@ -59,7 +58,16 @@ function App() {
       return str.replace(/\b\w/g, (char) => char.toUpperCase());
     }
 
-    useEffect(() => { fetchWeatherData() }, []);
+    useEffect(() => { fetchWeatherData(latitude,longitude) }, []);
+    useEffect(() => {
+      if (city && latitude && longitude) {
+        localStorage.setItem("city", city);
+        localStorage.setItem("lat", latitude);
+        localStorage.setItem("long", longitude);
+        console.log(forecastData)
+        console.log(currentData) 
+      }
+    }, [city, latitude, longitude]);
 
     return (
       <div className='bg-[#121212] p-4 min-h-screen md:p-12'>
