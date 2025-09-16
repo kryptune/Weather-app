@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 export default function MainPanel ({city,data,capitalize}){
     const [hour, setHour] = useState("1h")
-    const [rain ,setRain] = useState( data?.rain?.["1h"] || 0)
+    const [rain ,setRain] = useState(0)
     const temperature = data?.main?.temp || "";
     const country = data?.sys?.country || "";
     const textSize = city.length > 8 ? "text-2xl" : "text-3xl"
@@ -14,11 +14,15 @@ export default function MainPanel ({city,data,capitalize}){
     const formatter = new Intl.DateTimeFormat('en-US', options);
     // Format the current date using the formatter.
     const formattedDate = formatter.format(currentDate);
-    if(data?.rain?.["3h"]){
-        setHour("3h")
-        setRain(data?.rain?.["3h"])
-    }
+    useEffect( ()=> {
+        if(data?.rain?.["3h"]){
+            setHour("3h")
+            setRain(data?.rain?.["3h"])
+        }
+        setRain(data?.rain?.[hour])
+    }, [data] )
 
+    console.log( data?.rain?.["1h"] )
 
     return(
         <div className="flex rounded-3xl bg-[#242424] p-5 items-center justify-evenly md:px-7 md:py-10 md:h-[200px] md:mr-4">
